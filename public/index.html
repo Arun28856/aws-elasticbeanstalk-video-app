@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Application</title>
+</head>
+<body>
+    <h2>Login or Sign Up</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+
+    <div id="video-section" style="display:none;">
+        <h2>Welcome, <span id="userLabel"></span></h2>
+        <video id="videoPlayer" width="480" controls>
+            <source src="https://video-application-bucket-mp4.s3.us-east-1.amazonaws.com/demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        let token = '';
+        function signup() {
+            fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                })
+            }).then(res => res.text()).then(alert);
+        }
+
+        function login() {
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('username').value,
+                    password: document.getElementById('password').value
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                token = data.token;
+                document.getElementById('userLabel').textContent = document.getElementById('username').value;
+                document.getElementById('video-section').style.display = 'block';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('videoPlayer');
+            video.addEventListener('ended', () => {
+                fetch('/playback-success', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value
+                    })
+                }).then(res => res.text()).then(alert);
+            });
+        });
+    </script>
+</body>
+</html>
