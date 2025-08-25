@@ -1,0 +1,44 @@
+S3 Bucket Policy:
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowPublicReadAccessToVideo",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::videoapp-bucket-mp4/demo.mp4"
+        }
+    ]
+}
+
+CORS:
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "http://video-application.us-east-1.elasticbeanstalk.com/"
+        ],
+        "ExposeHeaders": []
+    }
+]
+
+SNS Permissions for Elastic Beanstalk:
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:sns:us-east-1:637423266350:VideoNotifications"
+    }
+  ]
+}
